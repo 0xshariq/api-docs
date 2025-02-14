@@ -13,19 +13,34 @@ export default function Register() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [message, setMessage] = useState({ text: "", type: "" })
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage({ text: "", type: "" })
+    setIsLoading(true)
 
     try {
-        const BASE_URL = 'https://user-authentication-api-jqfm.onrender.com/api/v2'
+      const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
       const response = await axios.post(`${BASE_URL}/register`, { name, email, password })
-      
-    } catch (error) {
-      console.error("Error:", error)
-      setMessage({ text: "An error occurred. Please try again.", type: "error" })
+
+      if (response.data.message) {
+        setMessage({ text: "Registration successful! Please login.", type: "success" })
+
+        // Redirect to login page after a brief delay
+        setTimeout(() => {
+          router.push("/login")
+        }, 200)
+      }
+    } catch (error: any) {
+      console.log("Error:", error)
+      setMessage({
+        text: error.response?.data?.message || "An error occurred. Please try again.",
+        type: "error",
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -35,10 +50,24 @@ export default function Register() {
         <h2 className="text-2xl font-bold text-primary mb-6 text-center">Register</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Username" required />
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Full Name"
+              required
+              disabled={isLoading}
+            />
           </div>
           <div>
-            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+              disabled={isLoading}
+            />
           </div>
           <div>
             <Input
@@ -47,10 +76,11 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               required
+              disabled={isLoading}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Register
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Registering..." : "Register"}
           </Button>
         </form>
         {message.text && (
