@@ -28,6 +28,7 @@ export default function Home() {
     { title: "Diverse Collection", description: "Comprehensive APIs for different needs." },
     { title: "Simplified Integration", description: "Clear documentation & code samples." },
     { title: "Community-Driven", description: "A vibrant developer community." },
+    {title:"API Key Security",description:"Your API key is securely stored and encrypted."}
   ];
 
   return (
