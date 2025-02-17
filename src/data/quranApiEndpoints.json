@@ -3,6 +3,7 @@
     "title": "1. Get All Surahs",
     "endpoint": "GET /surah",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /surah",
     "sampleResponse": [
       {
@@ -27,6 +28,7 @@
     "title": "2. Get Surah by Number",
     "endpoint": "GET /surah/:surahNumber",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /surah/1",
     "sampleResponse": {
       "number": 1,
@@ -41,6 +43,7 @@
     "title": "3. Get Ayah by Surah Number and Verse Number",
     "endpoint": "GET /surahNumber:verseNumber&lang=eng",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /1:1",
     "sampleResponse": {
       "english": {
@@ -61,6 +64,7 @@
     "title": "4. Get Audio",
     "endpoint": "GET /audio/:reciter/surahNumber:verseNumber",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /audio/Alafasy_64kbps/1:1",
     "sampleResponse": "Audio file (MP3 format)"
   },
@@ -68,6 +72,7 @@
     "title": "5. Get Reciters",
     "endpoint": "GET /reciters",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /reciters",
     "sampleResponse": [
       {
@@ -84,6 +89,7 @@
     "title": "6. Get Para Images",
     "endpoint": "GET /para/paraNumber:pageNumber",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /para/1:5",
     "sampleResponse": "Image file (PNG format)"
   },
@@ -91,6 +97,7 @@
     "title": "7. Get Surah Images",
     "endpoint": "GET /surah/surahNumber:pageNumber",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /surah/2:30",
     "sampleResponse": "Image file (PNG format)"
   },
@@ -98,6 +105,7 @@
     "title": "8. Get All Verses in JSON Format",
     "endpoint": "GET /",
     "headers": "x-api-key : YOUR_API_KEY",
+    "query" : "?key=YOUR_API_KEY",
     "exampleRequest": "GET /",
     "sampleResponse": "Complete Quran JSON structure with all verses"
   }
