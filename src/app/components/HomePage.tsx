@@ -62,55 +62,10 @@ export default function Home() {
         <p className="mx-auto max-w-2xl text-lg text-gray-600">
           Access a collection of free, powerful APIs for your projects.
         </p>
+        <p className="mx-auto">
+          Make sure to register/login to get your API key through your email.
+        </p>
       </section>
-
-      {/* API Key Section */}
-      {apiKey ? (
-        <section className="mt-12 bg-white p-6 rounded-lg shadow-lg border border-gray-200 text-center">
-          <h2 className="text-2xl font-bold text-green-700">Your API Key</h2>
-          <div className="bg-gray-100 mt-4 p-3 rounded-md text-gray-700 font-mono break-all text-lg">
-            {apiKey}
-          </div>
-          <div className="flex justify-center gap-4 mt-4">
-            <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={handleCopy}
-            >
-              Copy API Key
-            </Button>
-            <Button
-              className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={() => {
-                localStorage.removeItem("api-key");
-                setApiKey(null);
-              }}
-            >
-              Logout & Remove API Key
-            </Button>
-          </div>
-        </section>
-      ) : (
-        <section className="mt-12 text-center">
-          <p className="text-lg text-gray-600">
-            Register or login to get your API key.
-          </p>
-          <div className="mt-4 space-x-4">
-            <Link
-              href="/login"
-              className="text-green-700 hover:underline font-medium"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="text-green-700 hover:underline font-medium"
-            >
-              Register
-            </Link>
-          </div>
-        </section>
-      )}
-
       {/* API Cards Section */}
       <div className="grid gap-6 mt-16 md:grid-cols-2 lg:grid-cols-2">
         {[
