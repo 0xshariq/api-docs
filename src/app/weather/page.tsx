@@ -118,6 +118,9 @@ export default function WeatherAPI() {
                       <strong>Headers:</strong> {card.headers}
                     </p>
                     <p>
+                      <strong>Query :</strong> {card.query}
+                    </p>
+                    <p>
                       <strong>Example Request:</strong> {card.exampleRequest}
                     </p>
                     <div>
