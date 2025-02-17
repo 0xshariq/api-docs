@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -7,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import axios from "axios"
+
+const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
 
 export default function Register() {
   const [name, setName] = useState("")
@@ -22,19 +26,17 @@ export default function Register() {
     setIsLoading(true)
 
     try {
-      const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
       const response = await axios.post(`${BASE_URL}/register`, { name, email, password })
 
       if (response.data.message) {
         setMessage({ text: "Registration successful! Please login.", type: "success" })
 
-        // Redirect to login page after a brief delay
         setTimeout(() => {
           router.push("/login")
         }, 200)
       }
     } catch (error: any) {
-      console.log("Error:", error)
+      console.error("Error:", error)
       setMessage({
         text: error.response?.data?.message || "An error occurred. Please try again.",
         type: "error",
@@ -49,36 +51,30 @@ export default function Register() {
       <div className="bg-card text-card-foreground p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-primary mb-6 text-center">Register</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Full Name"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          <div>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          <div>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              required
-              disabled={isLoading}
-            />
-          </div>
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Full Name"
+            required
+            disabled={isLoading}
+          />
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+            disabled={isLoading}
+          />
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            disabled={isLoading}
+          />
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Registering..." : "Register"}
           </Button>

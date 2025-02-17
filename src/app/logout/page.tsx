@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import axios from "axios"
 
+const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
+
 export default function Logout() {
   const router = useRouter()
   const [message, setMessage] = useState({ text: "", type: "" })
@@ -15,7 +17,6 @@ export default function Logout() {
         const token = localStorage.getItem("auth-token")
 
         if (token) {
-          const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
           await axios.post(
             `${BASE_URL}/logout`,
             {},
@@ -26,17 +27,14 @@ export default function Logout() {
             },
           )
 
-          // Clear local storage
           localStorage.removeItem("auth-token")
           setMessage({ text: "Logged out successfully!", type: "success" })
 
-          // Redirect after a brief delay
           setTimeout(() => {
             router.push("/login")
-            router.refresh() // Refresh to update auth state
+            router.refresh()
           }, 1000)
         } else {
-          // If no token found, redirect immediately
           router.push("/login")
         }
       } catch (error: any) {
@@ -46,7 +44,6 @@ export default function Logout() {
           type: "error",
         })
 
-        // Even if the API call fails, clear local storage and redirect
         localStorage.removeItem("auth-token")
         setTimeout(() => {
           router.push("/login")
