@@ -37,12 +37,19 @@ export default function Logout() {
         } else {
           router.push("/login")
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Logout Error:", error)
-        setMessage({
-          text: error.response?.data?.message || "An error occurred during logout.",
-          type: "error",
-        })
+        if (axios.isAxiosError(error) && error.response) {
+          setMessage({
+            text: error.response.data?.message || "An error occurred during logout.",
+            type: "error",
+          })
+        } else {
+          setMessage({
+            text: "An error occurred during logout.",
+            type: "error",
+          })
+        }
 
         localStorage.removeItem("auth-token")
         setTimeout(() => {

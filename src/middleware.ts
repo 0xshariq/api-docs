@@ -6,18 +6,18 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public routes that don't require authentication
-  const publicRoutes = ["/login", "/register", "/quran", "/weather","/hadith","/recipes","/github"];
+  const publicRoutes = ["/","/login", "/register", "/quran", "/weather","/hadith","/recipes","/github"];
 
   // Normalize pathname by removing trailing slashes
-  const normalizedPath = pathname.replace(/\/$/, "");
+  // const normalizedPath = pathname.replace(/\/$/, "");
 
   // If the user is NOT authenticated and NOT visiting a public route, redirect to login
-  if (!authToken && !publicRoutes.includes(normalizedPath)) {
+  if (!authToken && !publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/login", request.url)); // Redirect to login
   }
 
   // If the user is authenticated and tries to access login/register, redirect to homepage
-  if (authToken && publicRoutes.includes(normalizedPath)) {
+  if (authToken && publicRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

@@ -15,7 +15,7 @@ export default function WeatherAPI() {
   const [activeEndpoint, setActiveEndpoint] = useState("current")
   const [city, setCity] = useState("")
   const [days, setDays] = useState("3")
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -74,16 +74,17 @@ export default function WeatherAPI() {
 
                 {activeEndpoint === "forecast" && (
                   <Select onValueChange={setDays} defaultValue={days}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select number of days" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 day</SelectItem>
-                      <SelectItem value="3">3 days</SelectItem>
-                      <SelectItem value="5">5 days</SelectItem>
-                      <SelectItem value="7">7 days</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select number of days" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 14 }, (_, i) => (
+                      <SelectItem key={i + 1} value={(i + 1).toString()}>
+                        {i + 1} {i === 0 ? "day" : "days"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 )}
 
                 <Button type="submit" disabled={isLoading}>

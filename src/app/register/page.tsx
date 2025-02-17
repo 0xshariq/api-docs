@@ -35,12 +35,19 @@ export default function Register() {
           router.push("/login")
         }, 200)
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error:", error)
-      setMessage({
-        text: error.response?.data?.message || "An error occurred. Please try again.",
-        type: "error",
-      })
+      if (axios.isAxiosError(error) && error.response) {
+        setMessage({
+          text: error.response.data?.message || "An error occurred. Please try again.",
+          type: "error",
+        })
+      } else {
+        setMessage({
+          text: "An error occurred. Please try again.",
+          type: "error",
+        })
+      }
     } finally {
       setIsLoading(false)
     }

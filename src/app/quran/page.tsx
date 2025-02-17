@@ -31,7 +31,7 @@ export default function QuranAPI() {
   const [pageNumber, setPageNumber] = useState("");
   const [reciter, setReciter] = useState("Alafasy_64kbps");
   const [language, setLanguage] = useState("eng");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 

@@ -36,8 +36,12 @@ export default function Login() {
         router.push("/")
         router.refresh()
       }, 200)
-    } catch (error: any) {
-      setMessage({ text: error.response?.data?.message || "An error occurred.", type: "error" })
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setMessage({ text: error.response?.data?.message || "An error occurred.", type: "error" })
+      } else {
+        setMessage({ text: "An error occurred.", type: "error" })
+      }
     } finally {
       setIsLoading(false)
     }
@@ -76,7 +80,7 @@ export default function Login() {
           </Alert>
         )}
         <p className="mt-4 text-center">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="text-primary hover:underline">
             Register here
           </Link>
