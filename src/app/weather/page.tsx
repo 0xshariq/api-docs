@@ -109,7 +109,7 @@ export default function WeatherAPI() {
 
 const config = {
   method: 'get',
-  url: '${BASE_URL}/current?city=London',
+  url: '${BASE_URL}/current&city=London',
   headers: {
     'Accept': 'application/json',
     'x-api-key': 'YOUR_API_KEY'

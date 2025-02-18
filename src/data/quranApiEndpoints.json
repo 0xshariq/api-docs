@@ -44,20 +44,10 @@
     "endpoint": "GET /surahNumber:verseNumber&lang=eng",
     "headers": "x-api-key : YOUR_API_KEY",
     "query" : "?key=YOUR_API_KEY",
-    "exampleRequest": "GET /1:1",
+    "exampleRequest": "GET /1:1&lang=eng",
     "sampleResponse": {
-      "english": {
         "number": 1,
         "text": "In the name of Allah, the Most Gracious, the Most Merciful."
-      },
-      "arabic": {
-        "number": 1,
-        "text": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
-      },
-      "urdu": {
-        "number": 1,
-        "text": "اللہ کے نام سے جو بڑا مہربان نہایت رحم والا ہے"
-      }
     }
   },
   {
