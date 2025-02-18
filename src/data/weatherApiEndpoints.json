@@ -2,8 +2,12 @@
   {
     "title": "Get Current Weather",
     "endpoint": "GET /current",
-    "headers": "x-api-key : YOUR_API_KEY",
-    "query": "?key=YOUR_API_KEY",
+    "description": "Get current weather data for a specific city",
+    "parameters": [
+      { "name": "city", "type": "string", "required": true, "description": "City name" },
+      { "name": "key", "type": "string", "required": true, "description": "Your API key" }
+    ],
+    "headers": "{'Accept': 'application/json', 'x-api-key': 'YOUR_API_KEY'}",
     "exampleRequest": "GET /current?key=YOUR_API_KEY&city=London",
     "sampleResponse": {
       "location": {
@@ -50,8 +54,13 @@
   {
     "title": "Get Weather Forecast",
     "endpoint": "GET /forecast",
-    "headers": "x-api-key : YOUR_API_KEY",
-    "query": "?key=YOUR_API_KEY",
+    "description": "Get weather forecast for up to 7 days",
+    "parameters": [
+      { "name": "city", "type": "string", "required": true, "description": "City name" },
+      { "name": "days", "type": "number", "required": false, "description": "Number of days (1-7)" },
+      { "name": "key", "type": "string", "required": true, "description": "Your API key" }
+    ],
+    "headers": "{'Accept': 'application/json', 'x-api-key': 'YOUR_API_KEY'}",
     "exampleRequest": "GET /forecast?key=YOUR_API_KEY&city=London&days=3",
     "sampleResponse": {
       "location": {
@@ -178,3 +187,4 @@
     }
   }
 ]
+

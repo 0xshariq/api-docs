@@ -1,124 +1,188 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import axios from "axios";
-import endpointCards from "@/data/quranApiEndpoints.json";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Check, Copy } from "lucide-react"
+import axios from "axios"
+import endpointCards from "@/data/quranApiEndpoints.json"
+
+const BASE_URL = "https://quran-api-ny11.onrender.com/api/v2/quran"
+
+const languageOptions = [
+  { value: "eng", label: "English" },
+  { value: "arabic", label: "Arabic" },
+  { value: "urdu", label: "Urdu" },
+]
+
+const CodeBlock = ({ code, language }: { code: string; language: string }) => {
+  const [copied, setCopied] = useState(false)
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(code)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <div className="relative">
+      <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
+        <code className={`language-${language}`}>{code}</code>
+      </pre>
+      <button
+        onClick={copyToClipboard}
+        className="absolute top-2 right-2 p-2 rounded-md bg-gray-800 hover:bg-gray-700 transition-colors"
+      >
+        {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-gray-400" />}
+      </button>
+    </div>
+  )
+}
 
 export default function QuranAPI() {
-  const [activeEndpoint, setActiveEndpoint] = useState("surah");
-  const [surahNumber, setSurahNumber] = useState("");
-  const [ayahNumber, setAyahNumber] = useState("");
-  const [paraNumber, setParaNumber] = useState("");
-  const [pageNumber, setPageNumber] = useState("");
-  const [reciter, setReciter] = useState("Alafasy_64kbps");
-  const [language, setLanguage] = useState("eng");
-  const [result, setResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [activeEndpoint, setActiveEndpoint] = useState("surah")
+  const [surahNumber, setSurahNumber] = useState("")
+  const [ayahNumber, setAyahNumber] = useState("")
+  const [language, setLanguage] = useState("eng")
+  const [result, setResult] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const fetchData = async (endpoint: string) => {
-    setIsLoading(true);
-    setError("");
-    setResult(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+    setResult(null)
 
     try {
-      const response = await axios.get(
-        `https://quran-api-ny11.onrender.com/api/v2/quran/${endpoint}?key=${process.env.NEXT_PUBLIC_QURAN_API_KEY}`
-      );
-      setResult(response.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setError("An error occurred while fetching data. Please try again.");
+      let endpoint = ""
+      switch (activeEndpoint) {
+        case "surah":
+          endpoint = `surah/${surahNumber}`
+          break
+        case "ayah":
+          endpoint = `${surahNumber}:${ayahNumber}&lang=${language}`
+          break
+      }
+
+      const response = await axios.get(`${BASE_URL}/${endpoint}`)
+      setResult(response.data)
+    } catch (error: any) {
+      setError(error.response?.data?.message || "An error occurred")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    let endpoint = "";
-
-    switch (activeEndpoint) {
-      case "surah":
-        endpoint = `surah/${surahNumber}`;
-        break;
-      case "ayah":
-        endpoint = `${surahNumber}:${ayahNumber}&lang=${language}`;
-        break;
-      case "audio":
-        endpoint = `audio/${reciter}/${surahNumber}:${ayahNumber}`;
-        break;
-      case "para":
-        endpoint = `para/${paraNumber}:${pageNumber}`;
-        break;
-      case "surahPage":
-        endpoint = `surah/${surahNumber}:${pageNumber}`;
-        break;
-    }
-
-    fetchData(endpoint);
-  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-primary mb-6">Quran API</h1>
+      <h1 className="text-3xl font-bold text-primary mb-6">Quran API Documentation</h1>
 
-      <Tabs defaultValue="tryItOut" className="mb-6">
-        <TabsList className="mb-4">
-          <TabsTrigger value="tryItOut">Try It Out</TabsTrigger>
-          <TabsTrigger value="docs">Docs</TabsTrigger>
+      <Tabs defaultValue="docs" className="space-y-6">
+        <TabsList className="w-full justify-start">
+          <TabsTrigger value="docs">Documentation</TabsTrigger>
+          <TabsTrigger value="tryit">Try It Out</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="tryItOut">
+        <TabsContent value="docs" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Try the Quran API</CardTitle>
+              <CardTitle>Getting Started</CardTitle>
               <CardDescription>
-                Select an endpoint and fill in the required fields to test the
-                API
+                Base URL: <code className="bg-gray-100 px-2 py-1 rounded">{BASE_URL}</code>
               </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Authentication</h3>
+                <p className="text-gray-600 mb-2">
+                  All API requests require an API key to be included in the request headers:
+                </p>
+                <CodeBlock
+                  language="javascript"
+                  code={`const headers = {
+  'x-api-key': 'YOUR_API_KEY'
+}`}
+                />
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Example Request</h3>
+                <CodeBlock
+                  language="javascript"
+                  code={`const axios = require('axios');
+
+const config = {
+  method: 'get',
+  url: '${BASE_URL}/surah/1',
+  headers: {
+    'Accept': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  }
+};
+
+axios(config)
+  .then(response => console.log(JSON.stringify(response.data)))
+  .catch(error => console.log(error));`}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {endpointCards.map((card, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <CardTitle>{card.title}</CardTitle>
+                  <CardDescription className="font-mono">{card.endpoint}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Headers:</strong> <code className="bg-gray-100 px-2 py-1 rounded">{card.headers}</code>
+                    </p>
+                    <p>
+                      <strong>Example Request:</strong>{" "}
+                      <code className="bg-gray-100 px-2 py-1 rounded">{card.exampleRequest}</code>
+                    </p>
+                    <div>
+                      <strong>Sample Response:</strong>
+                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2">
+                        <code>{typeof card.sampleResponse === 'string' ? card.sampleResponse : JSON.stringify(card.sampleResponse, null, 2)}</code>
+                      </pre>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="tryit">
+          <Card>
+            <CardHeader>
+              <CardTitle>Try the API</CardTitle>
+              <CardDescription>Test the API endpoints with different parameters</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Select
-                  onValueChange={setActiveEndpoint}
-                  defaultValue={activeEndpoint}
-                >
+                <Select onValueChange={setActiveEndpoint} defaultValue={activeEndpoint}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an endpoint" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="surah">Get Surah</SelectItem>
                     <SelectItem value="ayah">Get Ayah</SelectItem>
-                    <SelectItem value="audio">Get Audio</SelectItem>
-                    <SelectItem value="para">Get Para</SelectItem>
-                    <SelectItem value="surahPage">Get Surah Page</SelectItem>
                   </SelectContent>
                 </Select>
 
-                {(activeEndpoint === "surah" ||
-                  activeEndpoint === "ayah" ||
-                  activeEndpoint === "audio" ||
-                  activeEndpoint === "surahPage") && (
+                <div className="space-y-4">
                   <Input
                     type="number"
                     placeholder="Surah Number (1-114)"
@@ -128,127 +192,55 @@ export default function QuranAPI() {
                     max="114"
                     required
                   />
-                )}
 
-                {(activeEndpoint === "ayah" || activeEndpoint === "audio") && (
-                  <Input
-                    type="number"
-                    placeholder="Ayah Number"
-                    value={ayahNumber}
-                    onChange={(e) => setAyahNumber(e.target.value)}
-                    min="1"
-                    required
-                  />
-                )}
-
-                {activeEndpoint === "audio" && (
-                  <Select onValueChange={setReciter} defaultValue={reciter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a reciter" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Alafasy_64kbps">Alafasy</SelectItem>
-                      <SelectItem value="Minshawy_Murattal_128kbps">
-                        Minshawy Murattal
-                      </SelectItem>
-                      <SelectItem value="Abdul_Basit_Mujawwad_128kbps">
-                        Abdul Basit Mujawwad
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-
-                {(activeEndpoint === "para" ||
-                  activeEndpoint === "surahPage") && (
-                  <Input
-                    type="number"
-                    placeholder="Page Number"
-                    value={pageNumber}
-                    onChange={(e) => setPageNumber(e.target.value)}
-                    min="1"
-                    required
-                  />
-                )}
-
-                {activeEndpoint === "para" && (
-                  <Input
-                    type="number"
-                    placeholder="Para Number"
-                    value={paraNumber}
-                    onChange={(e) => setParaNumber(e.target.value)}
-                    min="1"
-                    required
-                  />
-                )}
-
-                {activeEndpoint === "ayah" && (
-                  <Select onValueChange={setLanguage} defaultValue={language}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="eng">English</SelectItem>
-                      <SelectItem value="arabic">Arabic</SelectItem>
-                      <SelectItem value="urdu">Urdu</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
+                  {activeEndpoint === "ayah" && (
+                    <>
+                      <Input
+                        type="number"
+                        placeholder="Ayah Number"
+                        value={ayahNumber}
+                        onChange={(e) => setAyahNumber(e.target.value)}
+                        min="1"
+                        required
+                      />
+                      <Select onValueChange={setLanguage} defaultValue={language}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {languageOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </>
+                  )}
+                </div>
 
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? "Loading..." : "Send Request"}
                 </Button>
               </form>
 
-              {error && (
-                <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">
-                  {error}
-                </div>
-              )}
+              {error && <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">{error}</div>}
 
               {result && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold mb-2">Response:</h3>
-                  <pre className="bg-gray-100 p-4 rounded overflow-x-auto">
-                    {JSON.stringify(result, null, 2)}
-                  </pre>
+                <div className="mt-6 space-y-4">
+                  <h3 className="text-lg font-semibold">Response:</h3>
+                  <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
+                    <pre className="overflow-x-auto">
+                      <code>{JSON.stringify(result, null, 2)}</code>
+                    </pre>
+                  </div>
                 </div>
               )}
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="docs">
-          <div className="space-y-6">
-            {endpointCards.map((card, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardTitle>{card.title}</CardTitle>
-                  <CardDescription>{card.endpoint}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <p>
-                      <strong>Headers:</strong> {card.headers}
-                    </p>
-                    <p>
-                      <strong>Query :</strong> {card.query}
-                    </p>
-                    <p>
-                      <strong>Example Request:</strong> {card.exampleRequest}
-                    </p>
-                    <div>
-                      <strong>Sample Response:</strong>
-                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2">
-                        {typeof card.sampleResponse === "string" ? card.sampleResponse : JSON.stringify(card.sampleResponse, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }
+
