@@ -1,88 +1,136 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Check, Copy } from "lucide-react"
-import axios from "axios"
-import endpointCards from "@/data/quranApiEndpoints.json"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import axios from "axios";
+import endpointCards from "@/data/quranApiEndpoints.json";
+import Image from "next/image";
+import CodeBlock from "@/utils/codeblock";
 
-const BASE_URL = "https://quran-api-ny11.onrender.com/api/v2/quran"
+const BASE_URL = "https://quran-api-ny11.onrender.com/api/v2/quran";
 
 const languageOptions = [
   { value: "eng", label: "English" },
   { value: "arabic", label: "Arabic" },
   { value: "urdu", label: "Urdu" },
-]
+];
 
-const CodeBlock = ({ code, language }: { code: string; language: string }) => {
-  const [copied, setCopied] = useState(false)
+interface JsonResponse {
+  [key: string]: unknown;
+}
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  return (
-    <div className="relative">
-      <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
-        <code className={`language-${language}`}>{code}</code>
-      </pre>
-      <button
-        onClick={copyToClipboard}
-        className="absolute top-2 right-2 p-2 rounded-md bg-gray-800 hover:bg-gray-700 transition-colors"
-      >
-        {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-gray-400" />}
-      </button>
-    </div>
-  )
+interface ApiResponse {
+  type: "json" | "audio" | "image";
+  data: JsonResponse | string;
 }
 
 export default function QuranAPI() {
-  const [activeEndpoint, setActiveEndpoint] = useState("surah")
-  const [surahNumber, setSurahNumber] = useState("")
-  const [ayahNumber, setAyahNumber] = useState("")
-  const [language, setLanguage] = useState("eng")
-  const [result, setResult] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [activeEndpoint, setActiveEndpoint] = useState("1");
+  const [apiKey, setApiKey] = useState("");
+  const [surahNumber, setSurahNumber] = useState("");
+  const [verseNumber, setVerseNumber] = useState("");
+  const [language, setLanguage] = useState("eng");
+  const [reciter, setReciter] = useState("");
+  const [paraNumber, setParaNumber] = useState("");
+  const [pageNumber, setPageNumber] = useState("");
+  const [result, setResult] = useState<ApiResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError("")
-    setResult(null)
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    setResult(null);
 
     try {
-      let endpoint = ""
+      let endpoint = "";
+      const params: Record<string, string> = { key: apiKey };
+
       switch (activeEndpoint) {
-        case "surah":
-          endpoint = `surah/${surahNumber}`
-          break
-        case "ayah":
-          endpoint = `${surahNumber}:${ayahNumber}&lang=${language}`
-          break
+        case "1":
+          endpoint = "surah";
+          break;
+        case "2":
+          endpoint = `surah/${surahNumber}`;
+          break;
+        case "3":
+          endpoint = `${surahNumber}:${verseNumber}&lang=${language}`;
+          break;
+        case "4":
+          endpoint = `audio/${reciter}/${surahNumber}:${verseNumber}`;
+          break;
+        case "5":
+          endpoint = "reciters";
+          break;
+        case "6":
+          endpoint = `para/${paraNumber}:${pageNumber}`;
+          break;
+        case "7":
+          endpoint = `surah/${surahNumber}:${pageNumber}`;
+          break;
+        case "8":
+          endpoint = "";
+          break;
       }
 
-      const response = await axios.get(`${BASE_URL}/${endpoint}`)
-      setResult(response.data)
-    } catch (error: any) {
-      setError(error.response?.data?.message || "An error occurred")
-    } finally {
-      setIsLoading(false)
-    }
-  }
+      const response = await axios.get(`${BASE_URL}/${endpoint}`, {
+        params,
+        headers: { "x-api-key": apiKey },
+        responseType: activeEndpoint === "4" ? "arraybuffer" : "json",
+      });
 
+      let responseType: "json" | "audio" | "image" = "json";
+      let responseData: JsonResponse | string = response.data;
+
+      if (activeEndpoint === "4") {
+        responseType = "audio";
+        responseData = URL.createObjectURL(
+          new Blob([response.data], { type: "audio/mpeg" })
+        );
+      } else if (activeEndpoint === "6" || activeEndpoint === "7") {
+        responseType = "image";
+        responseData = `data:image/png;base64,${Buffer.from(
+          response.data,
+          "binary"
+        ).toString("base64")}`;
+      }
+
+      setResult({ type: responseType, data: responseData });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "An error occurred");
+      } else {
+        setError("An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-primary mb-6">Quran API Documentation</h1>
+      <h1 className="text-3xl font-bold text-primary mb-6">
+        Quran API Documentation
+      </h1>
 
       <Tabs defaultValue="docs" className="space-y-6">
         <TabsList className="w-full justify-start">
@@ -95,14 +143,18 @@ export default function QuranAPI() {
             <CardHeader>
               <CardTitle>Getting Started</CardTitle>
               <CardDescription>
-                Base URL: <code className="bg-gray-100 px-2 py-1 rounded">{BASE_URL}</code>
+                Base URL:{" "}
+                <code className="bg-gray-100 px-2 py-1 rounded">
+                  {BASE_URL}
+                </code>
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold mb-2">Authentication</h3>
                 <p className="text-gray-600 mb-2">
-                  All API requests require an API key to be included in the request headers:
+                  All API requests require an API key to be included in the
+                  request headers:
                 </p>
                 <CodeBlock
                   language="javascript"
@@ -140,21 +192,32 @@ axios(config)
               <Card key={index}>
                 <CardHeader>
                   <CardTitle>{card.title}</CardTitle>
-                  <CardDescription className="font-mono">{card.endpoint}</CardDescription>
+                  <CardDescription className="font-mono">
+                    {card.endpoint}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <p>
-                      <strong>Headers:</strong> <code className="bg-gray-100 px-2 py-1 rounded">{card.headers}</code>
+                      <strong>Headers:</strong>{" "}
+                      <code className="bg-gray-100 px-2 py-1 rounded">
+                        {card.headers}
+                      </code>
                     </p>
                     <p>
                       <strong>Example Request:</strong>{" "}
-                      <code className="bg-gray-100 px-2 py-1 rounded">{card.exampleRequest}</code>
+                      <code className="bg-gray-100 px-2 py-1 rounded">
+                        {card.exampleRequest}
+                      </code>
                     </p>
                     <div>
                       <strong>Sample Response:</strong>
                       <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2">
-                        <code>{typeof card.sampleResponse === 'string' ? card.sampleResponse : JSON.stringify(card.sampleResponse, null, 2)}</code>
+                        <code>
+                          {typeof card.sampleResponse === "string"
+                            ? card.sampleResponse
+                            : JSON.stringify(card.sampleResponse, null, 2)}
+                        </code>
                       </pre>
                     </div>
                   </div>
@@ -168,21 +231,40 @@ axios(config)
           <Card>
             <CardHeader>
               <CardTitle>Try the API</CardTitle>
-              <CardDescription>Test the API endpoints with different parameters</CardDescription>
+              <CardDescription>
+                Test the API endpoints with different parameters
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Select onValueChange={setActiveEndpoint} defaultValue={activeEndpoint}>
+                <Input
+                  type="text"
+                  placeholder="Enter your API key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  required
+                />
+
+                <Select
+                  onValueChange={setActiveEndpoint}
+                  defaultValue={activeEndpoint}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select an endpoint" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="surah">Get Surah</SelectItem>
-                    <SelectItem value="ayah">Get Ayah</SelectItem>
+                    {endpointCards.map((card, index) => (
+                      <SelectItem key={index} value={(index + 1).toString()}>
+                        {card.title}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
 
-                <div className="space-y-4">
+                {(activeEndpoint === "2" ||
+                  activeEndpoint === "3" ||
+                  activeEndpoint === "4" ||
+                  activeEndpoint === "7") && (
                   <Input
                     type="number"
                     placeholder="Surah Number (1-114)"
@@ -192,48 +274,102 @@ axios(config)
                     max="114"
                     required
                   />
+                )}
 
-                  {activeEndpoint === "ayah" && (
-                    <>
-                      <Input
-                        type="number"
-                        placeholder="Ayah Number"
-                        value={ayahNumber}
-                        onChange={(e) => setAyahNumber(e.target.value)}
-                        min="1"
-                        required
-                      />
-                      <Select onValueChange={setLanguage} defaultValue={language}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select language" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {languageOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </>
-                  )}
-                </div>
+                {(activeEndpoint === "3" || activeEndpoint === "4") && (
+                  <Input
+                    type="number"
+                    placeholder="Verse Number"
+                    value={verseNumber}
+                    onChange={(e) => setVerseNumber(e.target.value)}
+                    min="1"
+                    required
+                  />
+                )}
+
+                {activeEndpoint === "3" && (
+                  <Select onValueChange={setLanguage} defaultValue={language}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {languageOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+
+                {activeEndpoint === "4" && (
+                  <Input
+                    type="text"
+                    placeholder="Reciter (e.g., Alafasy_64kbps)"
+                    value={reciter}
+                    onChange={(e) => setReciter(e.target.value)}
+                    required
+                  />
+                )}
+
+                {(activeEndpoint === "6" || activeEndpoint === "7") && (
+                  <>
+                    <Input
+                      type="number"
+                      placeholder="Para Number (1-30)"
+                      value={paraNumber}
+                      onChange={(e) => setParaNumber(e.target.value)}
+                      min="1"
+                      max="30"
+                      required={activeEndpoint === "6"}
+                    />
+                    <Input
+                      type="number"
+                      placeholder="Page Number"
+                      value={pageNumber}
+                      onChange={(e) => setPageNumber(e.target.value)}
+                      min="1"
+                      required
+                    />
+                  </>
+                )}
 
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? "Loading..." : "Send Request"}
                 </Button>
               </form>
 
-              {error && <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">{error}</div>}
+              {error && (
+                <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">
+                  {error}
+                </div>
+              )}
 
               {result && (
                 <div className="mt-6 space-y-4">
                   <h3 className="text-lg font-semibold">Response:</h3>
-                  <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
-                    <pre className="overflow-x-auto">
-                      <code>{JSON.stringify(result, null, 2)}</code>
-                    </pre>
-                  </div>
+                  {result.type === "json" && (
+                    <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
+                      <pre className="overflow-x-auto">
+                        <code>{JSON.stringify(result.data, null, 2)}</code>
+                      </pre>
+                    </div>
+                  )}
+                  {result.type === "audio" && (
+                    <audio controls className="w-full">
+                      <source src={result.data as string} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  )}
+                  {result.type === "image" && (
+                    <Image
+                      src={(result.data as string) || "/placeholder.svg"}
+                      alt="Quran page"
+                      width={500}
+                      height={700}
+                      className="max-w-full h-auto rounded-lg"
+                    />
+                  )}
                 </div>
               )}
             </CardContent>
@@ -241,6 +377,5 @@ axios(config)
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
-
