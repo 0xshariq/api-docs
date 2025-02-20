@@ -22,10 +22,10 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";
 import endpointCards from "@/data/quranApiEndpoints.json";
-import Image from "next/image";
 import CodeBlock from "@/utils/codeblock";
 
 const BASE_URL = "https://quran-api-ny11.onrender.com/api/v2/quran";
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 const languageOptions = [
   { value: "eng", label: "English" },
@@ -44,7 +44,6 @@ interface ApiResponse {
 
 export default function QuranAPI() {
   const [activeEndpoint, setActiveEndpoint] = useState("1");
-  const [apiKey, setApiKey] = useState("");
   const [surahNumber, setSurahNumber] = useState("");
   const [verseNumber, setVerseNumber] = useState("");
   const [language, setLanguage] = useState("eng");
@@ -63,7 +62,7 @@ export default function QuranAPI() {
 
     try {
       let endpoint = "";
-      const params: Record<string, string> = { key: apiKey };
+      const params: Record<string, string> = {};
 
       switch (activeEndpoint) {
         case "1":
@@ -94,8 +93,13 @@ export default function QuranAPI() {
 
       const response = await axios.get(`${BASE_URL}/${endpoint}`, {
         params,
-        headers: { "x-api-key": apiKey },
-        responseType: activeEndpoint === "4" ? "arraybuffer" : "json",
+        headers: { "x-api-key": API_KEY },
+        responseType:
+          activeEndpoint === "4" ||
+          activeEndpoint === "6" ||
+          activeEndpoint === "7"
+            ? "arraybuffer"
+            : "json",
       });
 
       let responseType: "json" | "audio" | "image" = "json";
@@ -103,15 +107,12 @@ export default function QuranAPI() {
 
       if (activeEndpoint === "4") {
         responseType = "audio";
-        responseData = URL.createObjectURL(
-          new Blob([response.data], { type: "audio/mpeg" })
-        );
+        const blob = new Blob([response.data], { type: "audio/mpeg" });
+        responseData = URL.createObjectURL(blob);
       } else if (activeEndpoint === "6" || activeEndpoint === "7") {
         responseType = "image";
-        responseData = `data:image/png;base64,${Buffer.from(
-          response.data,
-          "binary"
-        ).toString("base64")}`;
+        const blob = new Blob([response.data], { type: "image/png" });
+        responseData = URL.createObjectURL(blob);
       }
 
       setResult({ type: responseType, data: responseData });
@@ -237,14 +238,6 @@ axios(config)
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  type="text"
-                  placeholder="Enter your API key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  required
-                />
-
                 <Select
                   onValueChange={setActiveEndpoint}
                   defaultValue={activeEndpoint}
@@ -355,21 +348,34 @@ axios(config)
                       </pre>
                     </div>
                   )}
-                  {result.type === "audio" && (
-                    <audio controls className="w-full">
-                      <source src={result.data as string} type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
-                  )}
-                  {result.type === "image" && (
-                    <Image
-                      src={(result.data as string) || "/placeholder.svg"}
-                      alt="Quran page"
-                      width={500}
-                      height={700}
-                      className="max-w-full h-auto rounded-lg"
-                    />
-                  )}
+                  {result.type === "audio" &&
+                    typeof result.data === "string" && (
+                      <div>
+                        <p className="mt-2 text-sm text-gray-600">Audio URL:</p>
+                        <a
+                          href={result.data}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline break-all"
+                        >
+                          {result.data}
+                        </a>
+                      </div>
+                    )}
+                  {result.type === "image" &&
+                    typeof result.data === "string" && (
+                      <div>
+                        <p className="mt-2 text-sm text-gray-600">Image URL:</p>
+                        <a
+                          href={result.data}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:underline break-all"
+                        >
+                          {result.data}
+                        </a>
+                      </div>
+                    )}
                 </div>
               )}
             </CardContent>
