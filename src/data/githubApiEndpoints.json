@@ -1,0 +1,25 @@
+{
+    "title": "1. Get User Activity",
+    "endpoint": "GET /user/:username/activity",
+    "headers": "Authorization: Bearer YOUR_API_KEY",
+    "query": "?apiKey=YOUR_API_KEY",
+    "exampleRequest": "GET /user/octocat/activity",
+    "sampleResponse": {
+      "status": "success",
+      "data": {
+        "username": "octocat",
+        "activities": [
+          {
+            "type": "PushEvent",
+            "repo": "octocat/Hello-World",
+            "timestamp": "2025-02-21T10:00:00Z"
+          },
+          {
+            "type": "PullRequestEvent",
+            "repo": "octocat/Hello-World",
+            "timestamp": "2025-02-21T12:00:00Z"
+          }
+        ]
+      }
+    }
+  }
