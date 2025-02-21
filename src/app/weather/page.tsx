@@ -12,7 +12,7 @@ import axios from "axios"
 import endpointCards from "@/data/weatherApiEndpoints.json"
 import CodeBlock from "@/utils/codeblock"
 import Image from "next/image"
-import { WeatherResponse } from "../../../types/weather"
+import { WeatherResponse } from "../../types/weather"
 
 const BASE_URL = "https://weather-api-7qxy.onrender.com/api/v2"
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
