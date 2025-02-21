@@ -141,41 +141,62 @@ axios(config)
         </TabsContent>
 
         <TabsContent value="tryit">
-          <Card>
-            <CardHeader>
-              <CardTitle>Try the API</CardTitle>
-              <CardDescription>Test the GitHub User Activity API endpoint</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  type="text"
-                  placeholder="Enter GitHub username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
+  <Card>
+    <CardHeader>
+      <CardTitle>Try the API</CardTitle>
+      <CardDescription>Test the GitHub User Activity API endpoint</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          type="text"
+          placeholder="Enter GitHub username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          disabled={isLoading}
+        />
 
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? "Loading..." : "Send Request"}
-                </Button>
-              </form>
+        <Button type="submit" disabled={isLoading} className="w-full">
+          {isLoading ? (
+            <>
+              <span className="animate-spin mr-2">⏳</span> Loading...
+            </>
+          ) : (
+            "Send Request"
+          )}
+        </Button>
+      </form>
 
-              {error && <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">{error}</div>}
+      {error && (
+        <div className="mt-4 p-4 bg-red-100 text-red-700 rounded border border-red-400">
+          ❌ {error}
+        </div>
+      )}
 
-              {result && (
-                <div className="mt-6 space-y-4">
-                  <h3 className="text-lg font-semibold">Response:</h3>
-                  <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
-                    <pre className="overflow-x-auto">
-                      <code>{JSON.stringify(result, null, 2)}</code>
-                    </pre>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+      {result && (
+        <div className="mt-6 space-y-4">
+          <h3 className="text-lg font-semibold">Response:</h3>
+          {result.data.activities.length > 0 ? (
+            <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
+              <details open>
+                <summary className="cursor-pointer text-yellow-300">📜 View JSON Response</summary>
+                <pre className="overflow-x-auto mt-2 p-2 border border-gray-700 rounded bg-black">
+                  <code className="text-green-400">{JSON.stringify(result, null, 2)}</code>
+                </pre>
+              </details>
+            </div>
+          ) : (
+            <div className="p-4 bg-blue-100 text-blue-700 rounded border border-blue-400">
+              ⚠️ No recent activity found for this user.
+            </div>
+          )}
+        </div>
+      )}
+    </CardContent>
+  </Card>
+</TabsContent>
+
       </Tabs>
     </div>
   )
