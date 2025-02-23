@@ -77,18 +77,18 @@
   },
   {
     "title": "6. Get Para Images",
-    "endpoint": "GET /para/paraNumber:pageNumber",
+    "endpoint": "GET /para-page/paraNumber:pageNumber",
     "headers": "x-api-key : YOUR_API_KEY",
     "query" : "?key=YOUR_API_KEY",
-    "exampleRequest": "GET /para/1:5",
+    "exampleRequest": "GET /para-page/1:5",
     "sampleResponse": "Image file (PNG format)"
   },
   {
     "title": "7. Get Surah Images",
-    "endpoint": "GET /surah/surahNumber:pageNumber",
+    "endpoint": "GET /surah-page/surahNumber:pageNumber",
     "headers": "x-api-key : YOUR_API_KEY",
     "query" : "?key=YOUR_API_KEY",
-    "exampleRequest": "GET /surah/2:30",
+    "exampleRequest": "GET /surah-page/2:30",
     "sampleResponse": "Image file (PNG format)"
   },
   {
