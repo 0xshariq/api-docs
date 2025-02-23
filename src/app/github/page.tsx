@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import axios from "axios";
 import CodeBlock from "@/utils/codeblock";
 import githubData from "@/data/githubApiEndpoints.json";
+import Image from "next/image";
 
 const BASE_URL = "https://github-user-activity-api.onrender.com/api/v1/github";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
@@ -235,7 +236,7 @@ axios(config)
                         className="p-4 border border-gray-200 rounded-lg shadow-md"
                       >
                         <div className="flex items-center space-x-4">
-                          <img
+                          <Image
                             src={activity.actor.avatar_url}
                             alt={activity.actor.display_login}
                             className="w-12 h-12 rounded-full"

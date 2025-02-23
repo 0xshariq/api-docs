@@ -33,11 +33,18 @@ export default function Register() {
       setTimeout(() => {
         router.push("/login")
       }, 1000)
-    } catch (error: any) {
-      setMessage({
-        text: error.response?.data?.message || "An error occurred. Please try again.",
-        type: "error",
-      })
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setMessage({
+          text: error.response?.data?.message || "An error occurred. Please try again.",
+          type: "error",
+        })
+      } else {
+        setMessage({
+          text: "An unexpected error occurred. Please try again.",
+          type: "error",
+        })
+      }
     } finally {
       setIsLoading(false)
     }

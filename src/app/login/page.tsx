@@ -34,9 +34,13 @@ export default function Login() {
         router.push("/")
         router.refresh()
       }, 1000)
-    } catch (error: any) {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
       setMessage({ text: error.response?.data?.message || "An error occurred.", type: "error" })
-    } finally {
+    } else {
+      console.error("Unexpected error:", error)
+    }
+      } finally {
       setIsLoading(false)
     }
   }
@@ -93,7 +97,7 @@ export default function Login() {
 
             <div className="text-center mt-4">
               <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link href="/register" className="text-primary hover:underline">
                   Register here
                 </Link>
