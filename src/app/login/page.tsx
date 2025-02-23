@@ -8,13 +8,10 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import axios from "axios"
 
 const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
-
-interface LoginResponse {
-  token: string
-}
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -29,63 +26,82 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const response = await axios.post<LoginResponse>(`${BASE_URL}/login`, { email, password })
+      const response = await axios.post(`${BASE_URL}/login`, { email, password })
       localStorage.setItem("auth-token", response.data.token)
       setMessage({ text: "Login successful!", type: "success" })
+
       setTimeout(() => {
         router.push("/")
         router.refresh()
-      }, 200)
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setMessage({ text: error.response?.data?.message || "An error occurred.", type: "error" })
-      } else {
-        setMessage({ text: "An error occurred.", type: "error" })
-      }
+      }, 1000)
+    } catch (error: any) {
+      setMessage({ text: error.response?.data?.message || "An error occurred.", type: "error" })
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="bg-card p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-            disabled={isLoading}
-          />
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-            disabled={isLoading}
-          />
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Logging in..." : "Login"}
-          </Button>
-        </form>
-        {message.text && (
-          <Alert
-            className={`mt-4 ${message.type === "error" ? "bg-destructive/15 text-destructive" : "bg-primary/15 text-primary"}`}
-          >
-            <AlertDescription>{message.text}</AlertDescription>
-          </Alert>
-        )}
-        <p className="mt-4 text-center">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline">
-            Register here
-          </Link>
-        </p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+          <CardDescription className="text-center">
+            Enter your email and password to login to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                id="password"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+                className="w-full"
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
+
+            {message.text && (
+              <Alert
+                className={`mt-4 ${
+                  message.type === "error" ? "bg-destructive/15 text-destructive" : "bg-primary/15 text-primary"
+                }`}
+              >
+                <AlertDescription>{message.text}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="text-center mt-4">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{" "}
+                <Link href="/register" className="text-primary hover:underline">
+                  Register here
+                </Link>
+              </p>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

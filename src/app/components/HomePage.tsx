@@ -91,7 +91,7 @@ export default function Home() {
     {
       title: "Recipe Finder API",
       desc: "Discover recipes, ingredients, and cooking instructions from around the world.",
-      link: "/recipes",
+      link: "/recipe",
       icon: "🍳",
     },
     {

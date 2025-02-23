@@ -8,6 +8,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import axios from "axios"
 
 const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
@@ -26,80 +27,93 @@ export default function Register() {
     setIsLoading(true)
 
     try {
-      const response = await axios.post(`${BASE_URL}/register`, { name, email, password })
+      await axios.post(`${BASE_URL}/register`, { name, email, password })
+      setMessage({ text: "Registration successful! Please login.", type: "success" })
 
-      if (response.data.message) {
-        setMessage({ text: "Registration successful! Please login.", type: "success" })
-
-        setTimeout(() => {
-          router.push("/login")
-        }, 200)
-      }
-    } catch (error) {
-      console.error("Error:", error)
-      if (axios.isAxiosError(error) && error.response) {
-        setMessage({
-          text: error.response.data?.message || "An error occurred. Please try again.",
-          type: "error",
-        })
-      } else {
-        setMessage({
-          text: "An error occurred. Please try again.",
-          type: "error",
-        })
-      }
+      setTimeout(() => {
+        router.push("/login")
+      }, 1000)
+    } catch (error: any) {
+      setMessage({
+        text: error.response?.data?.message || "An error occurred. Please try again.",
+        type: "error",
+      })
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="bg-card text-card-foreground p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-primary mb-6 text-center">Register</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Full Name"
-            required
-            disabled={isLoading}
-          />
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-            disabled={isLoading}
-          />
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-            disabled={isLoading}
-          />
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Registering..." : "Register"}
-          </Button>
-        </form>
-        {message.text && (
-          <Alert
-            className={`mt-4 ${message.type === "error" ? "bg-destructive/15 text-destructive" : "bg-primary/15 text-primary"}`}
-          >
-            <AlertDescription>{message.text}</AlertDescription>
-          </Alert>
-        )}
-        <p className="mt-4 text-center">
-          Already have an account?{" "}
-          <Link href="/login" className="text-primary hover:underline">
-            Login here
-          </Link>
-        </p>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center">Create an account</CardTitle>
+          <CardDescription className="text-center">Enter your details below to create your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                id="name"
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                disabled={isLoading}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                id="password"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+                className="w-full"
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating account..." : "Register"}
+            </Button>
+
+            {message.text && (
+              <Alert
+                className={`mt-4 ${
+                  message.type === "error" ? "bg-destructive/15 text-destructive" : "bg-primary/15 text-primary"
+                }`}
+              >
+                <AlertDescription>{message.text}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="text-center mt-4">
+              <p className="text-sm text-gray-600">
+                Already have an account?{" "}
+                <Link href="/login" className="text-primary hover:underline">
+                  Login here
+                </Link>
+              </p>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

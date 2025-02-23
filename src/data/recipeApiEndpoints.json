@@ -1,0 +1,143 @@
+[
+  {
+    "title": "1. Get Recipe by Name",
+    "endpoint": "GET /name/:name",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /name/spaghetti",
+    "sampleResponse": {
+      "results": [
+        {
+          "id": 1,
+          "title": "Spaghetti Bolognese",
+          "image": "https://spoonacular.com/recipeImages/1-312x231.jpg"
+        }
+      ]
+    }
+  },
+  {
+    "title": "2. Get Random Recipe",
+    "endpoint": "GET /random",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /random",
+    "sampleResponse": {
+      "recipes": [
+        {
+          "id": 2,
+          "title": "Chicken Curry",
+          "image": "https://spoonacular.com/recipeImages/2-312x231.jpg"
+        }
+      ]
+    }
+  },
+  {
+    "title": "3. Get Recipe by ID",
+    "endpoint": "GET /:id",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /1",
+    "sampleResponse": {
+      "id": 1,
+      "title": "Spaghetti Bolognese",
+      "image": "https://spoonacular.com/recipeImages/1-312x231.jpg",
+      "ingredients": ["spaghetti", "minced meat", "tomato sauce"]
+    }
+  },
+  {
+    "title": "4. Get Recipe Categories",
+    "endpoint": "GET /categories",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /categories",
+    "sampleResponse": {
+      "categories": [
+        {
+          "idCategory": "1",
+          "strCategory": "Beef",
+          "strCategoryThumb": "https://www.themealdb.com/images/category/beef.png",
+          "strCategoryDescription": "Beef is the culinary name for meat from cattle."
+        }
+      ]
+    }
+  },
+  {
+    "title": "5. Get Recipe by Category",
+    "endpoint": "GET /category/:category",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /category/Beef",
+    "sampleResponse": {
+      "meals": [
+        {
+          "idMeal": "1",
+          "strMeal": "Beef and Mustard Pie",
+          "strMealThumb": "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+        }
+      ]
+    }
+  },
+  {
+    "title": "6. Get Recipe by Area",
+    "endpoint": "GET /area/:area",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /area/Italian",
+    "sampleResponse": {
+      "meals": [
+        {
+          "idMeal": "1",
+          "strMeal": "Spaghetti Carbonara",
+          "strMealThumb": "https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg"
+        }
+      ]
+    }
+  },
+  {
+    "title": "7. Get Recipe by Ingredient",
+    "endpoint": "GET /ingredient/:ingredients",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /ingredient/tomato,cheese",
+    "sampleResponse": [
+      {
+        "id": 1,
+        "title": "Tomato Cheese Pasta",
+        "image": "https://spoonacular.com/recipeImages/1-312x231.jpg"
+      }
+    ]
+  },
+  {
+    "title": "8. Get Recipe Summary",
+    "endpoint": "GET /:id/summary",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /1/summary",
+    "sampleResponse": {
+      "id": 1,
+      "title": "Spaghetti Bolognese",
+      "summary": "A classic Italian pasta dish made with ground beef and tomato sauce."
+    }
+  },
+  {
+    "title": "9. Get Recipe Instructions",
+    "endpoint": "GET /:id/instructions",
+    "headers": "x-api-key : YOUR_API_KEY",
+    "query": "?key=YOUR_API_KEY",
+    "exampleRequest": "GET /1/instructions",
+    "sampleResponse": {
+      "id": 1,
+      "title": "Spaghetti Bolognese",
+      "instructions": [
+        {
+          "step": 1,
+          "description": "Boil the spaghetti."
+        },
+        {
+          "step": 2,
+          "description": "Cook the minced meat."
+        }
+      ]
+    }
+  }
+]
