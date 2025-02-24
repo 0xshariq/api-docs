@@ -33,10 +33,10 @@
   },
   {
     "title": "3. Get Recipe by ID",
-    "endpoint": "GET /:id",
+    "endpoint": "GET /id/:id",
     "headers": "x-api-key : YOUR_API_KEY",
     "query": "?key=YOUR_API_KEY",
-    "exampleRequest": "GET /1",
+    "exampleRequest": "GET /id/638199",
     "sampleResponse": {
       "id": 1,
       "title": "Spaghetti Bolognese",
@@ -109,10 +109,10 @@
   },
   {
     "title": "8. Get Recipe Summary",
-    "endpoint": "GET /:id/summary",
+    "endpoint": "GET /summary/id/:id",
     "headers": "x-api-key : YOUR_API_KEY",
     "query": "?key=YOUR_API_KEY",
-    "exampleRequest": "GET /1/summary",
+    "exampleRequest": "GET /summary/id/638199",
     "sampleResponse": {
       "id": 1,
       "title": "Spaghetti Bolognese",
@@ -121,10 +121,10 @@
   },
   {
     "title": "9. Get Recipe Instructions",
-    "endpoint": "GET /:id/instructions",
+    "endpoint": "GET /instructions/id/:id",
     "headers": "x-api-key : YOUR_API_KEY",
     "query": "?key=YOUR_API_KEY",
-    "exampleRequest": "GET /1/instructions",
+    "exampleRequest": "GET /instructions/id/638199",
     "sampleResponse": {
       "id": 1,
       "title": "Spaghetti Bolognese",

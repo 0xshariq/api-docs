@@ -12,7 +12,8 @@ import axios from "axios"
 import endpointCards from "@/data/weatherApiEndpoints.json"
 import CodeBlock from "@/utils/codeblock"
 import Image from "next/image"
-import { WeatherResponse } from "../../types/weather"
+import { WeatherResponse } from "@/types/weather"
+import {CopyableBaseUrl} from "@/utils/copyable-base-url";
 
 const BASE_URL = "https://weather-api-7qxy.onrender.com/api/v2"
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
@@ -68,7 +69,7 @@ export default function WeatherAPI() {
             <CardHeader>
               <CardTitle>Getting Started</CardTitle>
               <CardDescription>
-                Base URL: <code className="bg-gray-100 px-2 py-1 rounded">{BASE_URL}</code>
+                Base URL: <CopyableBaseUrl url={BASE_URL} />
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -235,4 +236,3 @@ axios(config)
     </div>
   )
 }
-
