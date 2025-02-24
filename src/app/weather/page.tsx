@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,10 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import axios from "axios"
 import endpointCards from "@/data/weatherApiEndpoints.json"
-import CodeBlock from "@/utils/codeblock"
 import Image from "next/image"
-import { WeatherResponse } from "@/types/weather"
-import {CopyableBaseUrl} from "@/utils/copyable-base-url";
+import type { WeatherResponse } from "@/types/weather"
+import { CopyableBaseUrl } from "@/utils/copyable-base-url"
+import { ApiSyntax } from "@/utils/api-syntax"
 
 const BASE_URL = "https://weather-api-7qxy.onrender.com/api/v2"
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
@@ -78,33 +77,7 @@ export default function WeatherAPI() {
                 <p className="text-gray-600 mb-2">
                   All API requests require an API key to be included in the request headers:
                 </p>
-                <CodeBlock
-                  language="javascript"
-                  code={`const headers = {
-  'x-api-key': 'YOUR_API_KEY'
-}`}
-                />
-              </div>
-
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Example Request</h3>
-                <CodeBlock
-                  language="javascript"
-                  code={`const axios = require('axios');
-
-const config = {
-  method: 'get',
-  url: '${BASE_URL}/current&city=London',
-  headers: {
-    'Accept': 'application/json',
-    'x-api-key': 'YOUR_API_KEY'
-  }
-};
-
-axios(config)
-  .then(response => console.log(JSON.stringify(response.data)))
-  .catch(error => console.log(error));`}
-                />
+                <ApiSyntax baseUrl={BASE_URL} endpoint="/current" method="GET" params={{ city: "London" }} />
               </div>
             </CardContent>
           </Card>
@@ -236,3 +209,4 @@ axios(config)
     </div>
   )
 }
+
