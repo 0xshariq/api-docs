@@ -5,7 +5,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Copy, Check } from "lucide-react"
+import { ArrowRight, Copy, Check } from 'lucide-react'
 
 const container = {
   hidden: { opacity: 0 },

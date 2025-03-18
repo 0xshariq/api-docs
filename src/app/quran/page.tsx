@@ -11,6 +11,7 @@ import axios from "axios"
 import endpointCards from "@/data/quranApiEndpoints.json"
 import { CopyableBaseUrl } from "@/utils/copyable-base-url"
 import { ApiSyntax } from "@/utils/api-syntax"
+import Image from "next/image"
 
 const BASE_URL = "https://quran-api-ny11.onrender.com/api/v2/quran"
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
@@ -305,7 +306,7 @@ export default function QuranAPI() {
                   )}
                   {result.type === "image" && typeof result.data === "string" && (
                     <div>
-                      <img
+                      <Image
                         src={result.data || "/placeholder.svg"}
                         alt="Quran page"
                         className="max-w-full h-auto rounded-lg"

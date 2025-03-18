@@ -1,47 +1,22 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import { Github, Menu, X } from "lucide-react"
-import axios from "axios" 
-const BASE_URL = "https://user-authentication-api-jqfm.onrender.com/api/v2/users"
+import { Github, Menu, X, LogOut, LogIn } from "lucide-react"
+import { useAuth } from "@/contexts/auth-context"
 
 export default function Navbar() {
   const router = useRouter()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { isAuthenticated, logout } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  useEffect(() => {
-    const token = localStorage.getItem("auth-token")
-    setIsLoggedIn(!!token)
-  }, [])
-
   const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("auth-token")
-
-      if (token) {
-        await axios.get(`${BASE_URL}/logout`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        localStorage.removeItem("auth-token")
-      }
-
-      setIsLoggedIn(false)
-      router.push("/login")
-      router.refresh()
-    } catch (error) {
-      console.error("Logout failed:", error)
-      localStorage.removeItem("auth-token")
-      setIsLoggedIn(false)
-      router.push("/login")
-    }
+    await logout()
+    router.push("/login")
+    router.refresh()
   }
 
   return (
@@ -59,28 +34,44 @@ export default function Navbar() {
               <Link href="/weather" className="text-white hover:text-green-100 transition-colors">
                 Weather API
               </Link>
+              <Link href="/hadith" className="text-white hover:text-green-100 transition-colors">
+                Hadith API
+              </Link>
+              <Link href="/recipes" className="text-white hover:text-green-100 transition-colors">
+                Recipe API
+              </Link>
+              <Link href="/github" className="text-white hover:text-green-100 transition-colors">
+                GitHub API
+              </Link>
             </div>
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
             <a
-              href="https://github.com/0xshariq/api-docs"
+              href="https://github.com/yourusername/api-docs"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white hover:text-green-100 transition-colors"
             >
               <Github className="h-6 w-6" />
             </a>
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button className="bg-white text-green-600 hover:bg-green-100" onClick={handleLogout}>
-                  Logout
+                <Button
+                  className="bg-white text-green-600 hover:bg-green-100 flex items-center space-x-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
                 </Button>
               </motion.div>
             ) : (
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link href="/login">
-                  <Button className="bg-white text-green-600 hover:bg-green-100">Login</Button>
+                  <Button className="bg-white text-green-600 hover:bg-green-100 flex items-center space-x-2">
+                    <LogIn className="h-4 w-4" />
+                    <span>Login</span>
+                  </Button>
                 </Link>
               </motion.div>
             )}
@@ -105,13 +96,29 @@ export default function Navbar() {
             <Link href="/weather" className="block text-white hover:text-green-100 transition-colors">
               Weather API
             </Link>
-            {isLoggedIn ? (
-              <Button className="w-full bg-white text-green-600 hover:bg-green-100" onClick={handleLogout}>
-                Logout
+            <Link href="/hadith" className="block text-white hover:text-green-100 transition-colors">
+              Hadith API
+            </Link>
+            <Link href="/recipes" className="block text-white hover:text-green-100 transition-colors">
+              Recipe API
+            </Link>
+            <Link href="/github" className="block text-white hover:text-green-100 transition-colors">
+              GitHub API
+            </Link>
+            {isAuthenticated ? (
+              <Button
+                className="w-full bg-white text-green-600 hover:bg-green-100 flex items-center justify-center space-x-2"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
               </Button>
             ) : (
               <Link href="/login" className="block">
-                <Button className="w-full bg-white text-green-600 hover:bg-green-100">Login</Button>
+                <Button className="w-full bg-white text-green-600 hover:bg-green-100 flex items-center justify-center space-x-2">
+                  <LogIn className="h-4 w-4" />
+                  <span>Login</span>
+                </Button>
               </Link>
             )}
           </motion.div>
