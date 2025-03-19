@@ -1,68 +1,81 @@
 [
-    {
-      "title": "1. Get Hadith by Number",
-      "endpoint": "GET /api/v1/hadith/:edition/:number",
-      "headers": "Content-Type: application/json",
-      "query": "None",
-      "exampleRequest": "GET /api/v1/hadith/en-sahihbukhari/1",
-      "sampleResponse": {
-        "id": 1,
-        "text": "Hadith text here",
-        "edition": "en-sahihbukhari"
+  {
+    "title": "1. Get Hadith by Number",
+    "endpoint": "GET /api/v1/hadith/:edition/:number",
+    "headers": "Content-Type: application/json",
+    "query": "None",
+    "exampleRequest": "GET /api/v1/hadith/en-sahihbukhari/1",
+    "sampleResponse": {
+      "id": 1,
+      "text": "Hadith text here",
+      "edition": "en-sahihbukhari"
+    }
+  },
+  {
+    "title": "2. Get All Editions",
+    "endpoint": "GET /api/v1/hadith/editions",
+    "headers": "Content-Type: application/json",
+    "query": "None",
+    "exampleRequest": "GET /api/v1/hadith/editions",
+    "sampleResponse": [
+      {
+        "language": "en",
+        "name": "sahihbukhari",
+        "id": "en-sahihbukhari"
+      },
+      {
+        "language": "ar",
+        "name": "sahihmuslim",
+        "id": "ar-sahihmuslim"
       }
-    },
-    {
-      "title": "2. Get All Editions",
-      "endpoint": "GET /api/v1/hadith/editions",
-      "headers": "Content-Type: application/json",
-      "query": "None",
-      "exampleRequest": "GET /api/v1/hadith/editions",
-      "sampleResponse": [
+    ]
+  },
+  {
+    "title": "3. Get Sections",
+    "endpoint": "GET /api/v1/hadith/:edition/sections/:number",
+    "headers": "Content-Type: application/json",
+    "query": "None",
+    "exampleRequest": "GET /api/v1/hadith/en-sahihbukhari/sections/1",
+    "sampleResponse": {
+      "section": 1,
+      "title": "Section Title",
+      "hadiths": [
         {
-          "language": "en",
-          "name": "sahihbukhari",
-          "id": "en-sahihbukhari"
+          "id": 1,
+          "text": "Hadith text here"
         },
         {
-          "language": "ar",
-          "name": "sahihmuslim",
-          "id": "ar-sahihmuslim"
+          "id": 2,
+          "text": "Another Hadith text here"
         }
       ]
-    },
-    {
-      "title": "3. Get Sections",
-      "endpoint": "GET /api/v1/hadith/:edition/sections/:number",
-      "headers": "Content-Type: application/json",
-      "query": "None",
-      "exampleRequest": "GET /api/v1/hadith/en-sahihbukhari/sections/1",
-      "sampleResponse": {
-        "section": 1,
-        "title": "Section Title",
-        "hadiths": [
-          {
-            "id": 1,
-            "text": "Hadith text here"
-          },
-          {
-            "id": 2,
-            "text": "Another Hadith text here"
-          }
-        ]
-      }
-    },
-    {
-      "title": "4. Get Hadith API Info",
-      "endpoint": "GET /api/v1/hadith/info",
-      "headers": "Content-Type: application/json",
-      "query": "None",
-      "exampleRequest": "GET /api/v1/hadith/info",
-      "sampleResponse": {
-        "version": "1.0",
-        "description": "Hadith API Information",
-        "source": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api"
-      }
     }
-  ]
-  
-  
+  },
+  {
+    "title": "4. Get Hadith API Info",
+    "endpoint": "GET /api/v1/hadith/info",
+    "headers": "Content-Type: application/json",
+    "query": "None",
+    "exampleRequest": "GET /api/v1/hadith/info",
+    "sampleResponse": {
+      "version": "1.0",
+      "description": "Hadith API Information",
+      "source": "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api"
+    }
+  },
+  {
+    "title": "5. Get Random Hadith",
+    "endpoint": "GET /api/v1/hadith/random",
+    "headers": "Content-Type: application/json",
+    "query": "?bookName={bookName}",
+    "exampleRequest": "GET /api/v1/hadith/random?bookName=bukhari",
+    "sampleResponse": {
+      "id": 1,
+      "text": "Random Hadith text here",
+      "book": "bukhari"
+    },
+    "bookNames": ["bukhari", "abudawud", "tirmidhi", "muslim", "ibnmajah"],
+    "note": "Use one of the book names in the query parameter to fetch a random Hadith from that book."
+  }
+]
+

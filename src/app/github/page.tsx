@@ -61,7 +61,7 @@ export default function GitHubAPI() {
       <h1 className="text-3xl font-bold text-primary mb-6">GitHub User Activity API Documentation</h1>
 
       <Tabs defaultValue="docs" className="space-y-6">
-        <TabsList className="w-full justify-start">
+        <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="docs">Documentation</TabsTrigger>
           <TabsTrigger value="tryit">Try It Out</TabsTrigger>
         </TabsList>
@@ -90,29 +90,35 @@ export default function GitHubAPI() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="overflow-hidden">
             <CardHeader>
               <CardTitle>Get User Activity</CardTitle>
-              <CardDescription className="font-mono">GET /user/:username/activity</CardDescription>
+              <CardDescription className="font-mono break-words">GET /user/:username/activity</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <p>
                   <strong>Headers:</strong>{" "}
-                  <code className="bg-gray-100 px-2 py-1 rounded">Authorization: Bearer YOUR_API_KEY</code>
+                  <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                    Authorization: Bearer YOUR_API_KEY
+                  </code>
                 </p>
                 <p>
                   <strong>Query Parameters:</strong>{" "}
-                  <code className="bg-gray-100 px-2 py-1 rounded">?apiKey=YOUR_API_KEY</code>
+                  <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                    ?apiKey=YOUR_API_KEY
+                  </code>
                 </p>
                 <p>
                   <strong>Example Request:</strong>{" "}
-                  <code className="bg-gray-100 px-2 py-1 rounded">GET /user/octocat/activity</code>
+                  <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                    GET /user/octocat/activity
+                  </code>
                 </p>
                 <div>
                   <strong>Sample Response:</strong>
-                  <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2">
-                    <code>
+                  <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2 max-w-full">
+                    <code className="break-words whitespace-pre-wrap">
                       {JSON.stringify(
                         {
                           status: "success",
@@ -170,8 +176,8 @@ export default function GitHubAPI() {
                 <div className="mt-6 space-y-4">
                   <h3 className="text-lg font-semibold">Response:</h3>
                   <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
-                    <pre className="overflow-x-auto">
-                      <code>{JSON.stringify(result, null, 2)}</code>
+                    <pre className="overflow-x-auto max-w-full">
+                      <code className="break-words whitespace-pre-wrap">{JSON.stringify(result, null, 2)}</code>
                     </pre>
                   </div>
                 </div>

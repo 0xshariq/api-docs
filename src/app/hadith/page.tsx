@@ -13,6 +13,7 @@ import endpointCards from "@/data/hadithApiEndpoints.json"
 import { CopyableBaseUrl } from "@/utils/copyable-base-url"
 import { ApiSyntax } from "@/utils/api-syntax"
 import CodeBlock from "@/utils/codeblock"
+import { Badge } from "@/components/ui/badge"
 
 const BASE_URL = "https://hadith-api.onrender.com"
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY
@@ -26,6 +27,7 @@ export default function HadithAPI() {
   const [edition, setEdition] = useState("eng-bukhari")
   const [hadithNumber, setHadithNumber] = useState("")
   const [sectionNumber, setSectionNumber] = useState("")
+  const [bookName, setBookName] = useState("bukhari")
   const [result, setResult] = useState<HadithResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -53,6 +55,10 @@ export default function HadithAPI() {
         case "4":
           endpoint = "/api/v1/hadith/info"
           break
+        case "5":
+          endpoint = `/api/v1/hadith/random`
+          params.bookName = bookName
+          break
       }
 
       const response = await axios.get(`${BASE_URL}${endpoint}`, {
@@ -79,12 +85,15 @@ export default function HadithAPI() {
     { value: "ara-muslim", label: "Sahih Muslim (Arabic)" },
   ]
 
+  // Get the book names from the 5th endpoint if it exists
+  const bookNames = endpointCards[4]?.bookNames || ["bukhari", "abudawud", "tirmidhi", "muslim", "ibnmajah"]
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-primary mb-6">Hadith API Documentation</h1>
 
       <Tabs defaultValue="docs" className="space-y-6">
-        <TabsList className="w-full justify-start">
+        <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="docs">Documentation</TabsTrigger>
           <TabsTrigger value="tryit">Try It Out</TabsTrigger>
         </TabsList>
@@ -112,7 +121,7 @@ export default function HadithAPI() {
 
 const config = {
   method: 'get',
-  url: '${BASE_URL}/api/v1/hadith/en-sahihbukhari/1',
+  url: '${BASE_URL}/api/v1/hadith/eng-bukhari/1',
   headers: { 
     'Content-Type': 'application/json'
   }
@@ -128,26 +137,62 @@ axios(config)
 
           <div className="grid gap-6 md:grid-cols-2">
             {endpointCards.map((card, index) => (
-              <Card key={index}>
+              <Card key={index} className="overflow-hidden">
                 <CardHeader>
                   <CardTitle>{card.title}</CardTitle>
-                  <CardDescription className="font-mono">{card.endpoint}</CardDescription>
+                  <CardDescription className="font-mono break-words">{card.endpoint}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <p>
-                      <strong>Headers:</strong> <code className="bg-gray-100 px-2 py-1 rounded">{card.headers}</code>
+                      <strong>Headers:</strong>{" "}
+                      <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                        {card.headers}
+                      </code>
                     </p>
+                    {card.query && card.query !== "None" && (
+                      <p>
+                        <strong>Query Parameters:</strong>{" "}
+                        <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                          {card.query}
+                        </code>
+                      </p>
+                    )}
                     <p>
                       <strong>Example Request:</strong>{" "}
-                      <code className="bg-gray-100 px-2 py-1 rounded">{card.exampleRequest}</code>
+                      <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                        {card.exampleRequest}
+                      </code>
                     </p>
                     <div>
                       <strong>Sample Response:</strong>
-                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2">
-                        <code>{JSON.stringify(card.sampleResponse, null, 2)}</code>
+                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2 max-w-full">
+                        <code className="break-words whitespace-pre-wrap">
+                          {JSON.stringify(card.sampleResponse, null, 2)}
+                        </code>
                       </pre>
                     </div>
+
+                    {/* Display book names if available */}
+                    {card.bookNames && (
+                      <div className="mt-4">
+                        <strong>Available Book Names:</strong>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {card.bookNames.map((book, i) => (
+                            <Badge key={i} variant="outline" className="bg-green-50">
+                              {book}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Display note if available */}
+                    {card.note && (
+                      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                        <strong>Note:</strong> {card.note}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -211,6 +256,21 @@ axios(config)
                   />
                 )}
 
+                {activeEndpoint === "5" && (
+                  <Select onValueChange={setBookName} defaultValue={bookName}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select book name" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bookNames.map((book) => (
+                        <SelectItem key={book} value={book}>
+                          {book.charAt(0).toUpperCase() + book.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? "Loading..." : "Send Request"}
                 </Button>
@@ -222,8 +282,8 @@ axios(config)
                 <div className="mt-6 space-y-4">
                   <h3 className="text-lg font-semibold">Response:</h3>
                   <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
-                    <pre className="overflow-x-auto">
-                      <code>{JSON.stringify(result, null, 2)}</code>
+                    <pre className="overflow-x-auto max-w-full">
+                      <code className="break-words whitespace-pre-wrap">{JSON.stringify(result, null, 2)}</code>
                     </pre>
                   </div>
                 </div>

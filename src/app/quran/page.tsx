@@ -117,7 +117,7 @@ export default function QuranAPI() {
       <h1 className="text-3xl font-bold text-primary mb-6">Quran API Documentation</h1>
 
       <Tabs defaultValue="docs" className="space-y-6">
-        <TabsList className="w-full justify-start">
+        <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="docs">Documentation</TabsTrigger>
           <TabsTrigger value="tryit">Try It Out</TabsTrigger>
         </TabsList>
@@ -143,24 +143,29 @@ export default function QuranAPI() {
 
           <div className="grid gap-6 md:grid-cols-2">
             {endpointCards.map((card, index) => (
-              <Card key={index}>
+              <Card key={index} className="overflow-hidden">
                 <CardHeader>
                   <CardTitle>{card.title}</CardTitle>
-                  <CardDescription className="font-mono">{card.endpoint}</CardDescription>
+                  <CardDescription className="font-mono break-words">{card.endpoint}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <p>
-                      <strong>Headers:</strong> <code className="bg-gray-100 px-2 py-1 rounded">{card.headers}</code>
+                      <strong>Headers:</strong>{" "}
+                      <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                        {card.headers}
+                      </code>
                     </p>
                     <p>
                       <strong>Example Request:</strong>{" "}
-                      <code className="bg-gray-100 px-2 py-1 rounded">{card.exampleRequest}</code>
+                      <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                        {card.exampleRequest}
+                      </code>
                     </p>
                     <div>
                       <strong>Sample Response:</strong>
-                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2">
-                        <code>
+                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto max-w-full">
+                        <code className="break-words whitespace-pre-wrap">
                           {typeof card.sampleResponse === "string"
                             ? card.sampleResponse
                             : JSON.stringify(card.sampleResponse, null, 2)}
@@ -280,8 +285,8 @@ export default function QuranAPI() {
                   <h3 className="text-lg font-semibold">Response:</h3>
                   {result.type === "json" && (
                     <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
-                      <pre className="overflow-x-auto">
-                        <code>{JSON.stringify(result.data, null, 2)}</code>
+                      <pre className="overflow-x-auto max-w-full">
+                        <code className="break-words whitespace-pre-wrap">{JSON.stringify(result.data, null, 2)}</code>
                       </pre>
                     </div>
                   )}
@@ -291,7 +296,7 @@ export default function QuranAPI() {
                         <source src={result.data} type="audio/mpeg" />
                         Your browser does not support the audio element.
                       </audio>
-                      <p className="mt-2 text-sm text-gray-600">
+                      <p className="mt-2 text-sm text-gray-600 break-words">
                         Audio URL:{" "}
                         <a
                           href={result.data}
@@ -311,7 +316,7 @@ export default function QuranAPI() {
                         alt="Quran page"
                         className="max-w-full h-auto rounded-lg"
                       />
-                      <p className="mt-2 text-sm text-gray-600">
+                      <p className="mt-2 text-sm text-gray-600 break-words">
                         Image URL:{" "}
                         <a
                           href={result.data}

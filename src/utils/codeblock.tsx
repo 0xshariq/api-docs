@@ -55,8 +55,8 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
 
   return (
     <div className="relative group">
-      <pre className="bg-[#1e1e1e] text-[#D4D4D4] p-4 rounded-lg overflow-x-auto font-mono text-sm">
-        <code dangerouslySetInnerHTML={{ __html: getColoredCode() }} />
+      <pre className="bg-[#1e1e1e] text-[#D4D4D4] p-4 rounded-lg overflow-x-auto font-mono text-sm max-w-full">
+        <code className="break-words whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: getColoredCode() }} />
       </pre>
       <AnimatePresence>
         <motion.button

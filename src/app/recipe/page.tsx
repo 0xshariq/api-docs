@@ -93,7 +93,7 @@ export default function RecipeAPI() {
       <h1 className="text-3xl font-bold text-primary mb-6">Recipe API Documentation</h1>
 
       <Tabs defaultValue="docs" className="space-y-6">
-        <TabsList className="w-full justify-start">
+        <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="docs">Documentation</TabsTrigger>
           <TabsTrigger value="tryit">Try It Out</TabsTrigger>
         </TabsList>
@@ -124,24 +124,31 @@ export default function RecipeAPI() {
 
           <div className="grid gap-6 md:grid-cols-2">
             {endpointCards.map((card, index) => (
-              <Card key={index}>
+              <Card key={index} className="overflow-hidden">
                 <CardHeader>
                   <CardTitle>{card.title}</CardTitle>
-                  <CardDescription className="font-mono">{card.endpoint}</CardDescription>
+                  <CardDescription className="font-mono break-words">{card.endpoint}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
                     <p>
-                      <strong>Headers:</strong> <code className="bg-gray-100 px-2 py-1 rounded">{card.headers}</code>
+                      <strong>Headers:</strong>{" "}
+                      <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                        {card.headers}
+                      </code>
                     </p>
                     <p>
                       <strong>Example Request:</strong>{" "}
-                      <code className="bg-gray-100 px-2 py-1 rounded">{card.exampleRequest}</code>
+                      <code className="bg-gray-100 px-2 py-1 rounded break-words block overflow-x-auto">
+                        {card.exampleRequest}
+                      </code>
                     </p>
                     <div>
                       <strong>Sample Response:</strong>
-                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2">
-                        <code>{JSON.stringify(card.sampleResponse, null, 2)}</code>
+                      <pre className="bg-gray-100 p-4 rounded overflow-x-auto mt-2 max-w-full">
+                        <code className="break-words whitespace-pre-wrap">
+                          {JSON.stringify(card.sampleResponse, null, 2)}
+                        </code>
                       </pre>
                     </div>
                   </div>
@@ -233,8 +240,8 @@ export default function RecipeAPI() {
                 <div className="mt-6 space-y-4">
                   <h3 className="text-lg font-semibold">Response:</h3>
                   <div className="bg-gray-900 text-gray-100 p-4 rounded-lg">
-                    <pre className="overflow-x-auto">
-                      <code>{JSON.stringify(result, null, 2)}</code>
+                    <pre className="overflow-x-auto max-w-full">
+                      <code className="break-words whitespace-pre-wrap">{JSON.stringify(result, null, 2)}</code>
                     </pre>
                   </div>
                 </div>
