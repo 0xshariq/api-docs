@@ -4,11 +4,11 @@
     "endpoint": "GET /api/v1/hadith/:edition/:number",
     "headers": "Content-Type: application/json",
     "query": "None",
-    "exampleRequest": "GET /api/v1/hadith/en-sahihbukhari/1",
+    "exampleRequest": "GET /api/v1/hadith/eng-bukhari/1",
     "sampleResponse": {
       "id": 1,
       "text": "Hadith text here",
-      "edition": "en-sahihbukhari"
+      "edition": "eng-bukhari"
     }
   },
   {
@@ -19,14 +19,14 @@
     "exampleRequest": "GET /api/v1/hadith/editions",
     "sampleResponse": [
       {
-        "language": "en",
-        "name": "sahihbukhari",
-        "id": "en-sahihbukhari"
+        "language": "eng",
+        "name": "bukhari",
+        "id": "eng-bukhari"
       },
       {
-        "language": "ar",
-        "name": "sahihmuslim",
-        "id": "ar-sahihmuslim"
+        "language": "ara",
+        "name": "muslim",
+        "id": "ara-muslim"
       }
     ]
   },
@@ -35,7 +35,7 @@
     "endpoint": "GET /api/v1/hadith/:edition/sections/:number",
     "headers": "Content-Type: application/json",
     "query": "None",
-    "exampleRequest": "GET /api/v1/hadith/en-sahihbukhari/sections/1",
+    "exampleRequest": "GET /api/v1/hadith/eng-bukhari/sections/1",
     "sampleResponse": {
       "section": 1,
       "title": "Section Title",

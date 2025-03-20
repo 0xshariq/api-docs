@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Check, Copy, Terminal } from "lucide-react"
+import { Check, Copy } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 interface CopyableBaseUrlProps {
@@ -24,37 +24,44 @@ export function CopyableBaseUrl({ url }: CopyableBaseUrlProps) {
   }
 
   return (
-    <div className="relative flex flex-wrap items-center bg-[#1e1e1e] text-[#D4D4D4] rounded-lg p-3 font-mono text-sm overflow-hidden group">
-      <div className="flex items-center space-x-2 mr-2 mb-1 sm:mb-0">
-        <Terminal className="h-4 w-4 text-green-400 flex-shrink-0" />
-        <span className="text-green-400 font-semibold whitespace-nowrap">BASE_URL</span>
-      </div>
-      <div className="w-full sm:w-auto sm:flex-grow overflow-x-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
-        <span className="text-[#CE9178] break-all">{`"${url}"`}</span>
-      </div>
-      <AnimatePresence>
+    <div className="relative bg-gray-50 rounded-md border border-gray-200 p-4 font-mono text-sm">
+      <div className="flex items-start">
+        <div className="flex-1">
+          <div className="text-gray-500 mb-1">
+            <span className="text-gray-700 font-semibold">BASE_URL</span>
+          </div>
+          <div className="text-blue-600 break-all">{url}</div>
+        </div>
         <motion.button
           onClick={handleCopy}
-          className={`mt-2 sm:mt-0 sm:ml-2 px-3 py-1 rounded transition-all duration-300 ease-in-out flex items-center space-x-1 ${
-            copied ? "bg-green-500 text-white" : "bg-[#2d2d2d] text-gray-300 hover:bg-[#3d3d3d]"
-          }`}
-          initial={{ opacity: 0.8 }}
-          whileHover={{ opacity: 1 }}
+          className="flex items-center justify-center h-8 w-8 rounded-md text-gray-500 hover:bg-gray-200 transition-colors"
           whileTap={{ scale: 0.95 }}
         >
-          {copied ? (
-            <>
-              <Check className="h-4 w-4" />
-              <span className="text-xs font-medium">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Copy className="h-4 w-4" />
-              <span className="text-xs font-medium">Copy</span>
-            </>
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {copied ? (
+              <motion.div
+                key="check"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Check className="h-4 w-4 text-green-500" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="copy"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Copy className="h-4 w-4" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.button>
-      </AnimatePresence>
+      </div>
     </div>
   )
 }
