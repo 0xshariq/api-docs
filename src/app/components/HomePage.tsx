@@ -100,6 +100,30 @@ export default function Home() {
       link: "/github",
       icon: "🐱",
     },
+    {
+      title: "Image-to-Text API",
+      desc: "Convert images to text with OCR technology and machine learning models.",
+      link: "/image-to-text",
+      icon: "🖼️",
+    },
+    {
+      title: "Currency Exchange API",
+      desc: "Get real-time currency exchange rates and historical data.",
+      link: "/currency",
+      icon: "💱",
+    },
+    {
+      title: "URL Shortener API",
+      desc: "Shorten URLs and track click analytics with our URL shortener service.",
+      link: "/url-shortener",
+      icon: "🔗",
+    },
+    {
+      title: "IP Geolocation API",
+      desc: "Lookup IP addresses and get detailed geolocation information.",
+      link: "/ip-geolocation",
+      icon: "🌍",
+    }
   ]
 
   return (
