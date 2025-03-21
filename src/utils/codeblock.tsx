@@ -28,7 +28,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   const renderJavaScript = () => {
     return code
       .split("\n")
-      .map((line, index) => {
+      .map((line) => {
         // Replace keywords
         const processedLine = line
           .replace(
@@ -50,7 +50,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language }) => {
   const renderPython = () => {
     return code
       .split("\n")
-      .map((line, index) => {
+      .map((line) => {
         // Replace keywords
         const processedLine = line
           .replace(
